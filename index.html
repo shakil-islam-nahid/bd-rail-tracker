@@ -4,14 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BD Rail Track | বাংলাদেশ রেলওয়ে ট্র্যাকার</title>
-
-<!-- Leaflet Real Map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -22,177 +17,141 @@
 }
 html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-/* ---- HEADER ---- */
+/* HEADER */
 .header {
   background: var(--surface); border-bottom: 1px solid var(--border);
   padding: 10px 20px; display: flex; align-items: center; gap: 14px;
-  height: 58px; position: relative; z-index: 1000;
+  height: 56px; position: relative; z-index: 1000;
 }
 .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.logo-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--accent), #00a87a);
-  border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
-}
-.logo-title { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
+.logo-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent), #00a87a); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.logo-title { font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 1px; }
 .logo-sub { font-size: 10px; color: var(--muted); }
 
-.search-wrap { flex: 1; max-width: 380px; position: relative; }
-.search-wrap input {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 12px 8px 34px; color: var(--text);
-  font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none;
-  transition: border-color 0.2s;
-}
+.search-wrap { flex: 1; max-width: 360px; position: relative; }
+.search-wrap input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px 7px 32px; color: var(--text); font-size: 13px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
 .search-wrap input:focus { border-color: var(--accent); }
 .search-wrap input::placeholder { color: var(--muted); }
-.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 13px; }
-.search-results {
-  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-  display: none; z-index: 2000; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-}
-.search-results.show { display: block; }
-.sr-item {
-  padding: 9px 12px; cursor: pointer; display: flex; align-items: center;
-  gap: 10px; font-size: 12px; transition: background 0.15s; border-bottom: 1px solid var(--border);
-}
-.sr-item:last-child { border-bottom: none; }
-.sr-item:hover { background: var(--surface); }
-.sr-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); background: rgba(0,200,150,0.1); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
-.sr-status { margin-left: auto; font-size: 10px; padding: 2px 7px; border-radius: 10px; }
-.sr-status.running { background: rgba(0,200,150,0.15); color: var(--green); }
-.sr-status.delayed { background: rgba(255,209,102,0.15); color: var(--yellow); }
+.s-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 12px; }
+.s-drop { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.5); max-height: 280px; overflow-y: auto; }
+.s-drop.show { display: block; }
+.s-item { padding: 9px 12px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px; transition: background 0.15s; border-bottom: 1px solid var(--border); }
+.s-item:last-child { border-bottom: none; }
+.s-item:hover { background: var(--surface); }
+.s-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--accent); background: rgba(0,200,150,0.1); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+.s-st { margin-left: auto; font-size: 10px; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+.s-st.running { background: rgba(0,200,150,0.15); color: var(--green); }
+.s-st.delayed { background: rgba(255,209,102,0.15); color: var(--yellow); }
+.s-st.arrived { background: rgba(90,112,144,0.15); color: var(--muted); }
 
-.hstats { display: flex; gap: 14px; margin-left: auto; flex-shrink: 0; }
-.hstat { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.hstats { display: flex; gap: 12px; margin-left: auto; flex-shrink: 0; }
+.hstat { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
 .hdot { width: 7px; height: 7px; border-radius: 50%; animation: blink 2s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
-.last-update { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; }
+.upd { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; }
 
-/* ---- LAYOUT ---- */
-.main { display: flex; height: calc(100vh - 58px); }
+/* LAYOUT */
+.main { display: flex; height: calc(100vh - 56px); }
 
-/* ---- SIDEBAR ---- */
-.sidebar {
-  width: 270px; flex-shrink: 0; background: var(--surface);
-  border-right: 1px solid var(--border); display: flex; flex-direction: column;
-  overflow: hidden; transition: width 0.3s;
-}
-.sidebar.collapsed { width: 0; }
-.sidebar-head {
-  padding: 12px 14px; border-bottom: 1px solid var(--border);
-  font-size: 10px; font-weight: 600; letter-spacing: 1px;
-  color: var(--muted); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center;
-}
-.sidebar-head span { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; }
-.train-list { flex: 1; overflow-y: auto; padding: 8px; }
-.train-list::-webkit-scrollbar { width: 3px; }
-.train-list::-webkit-scrollbar-thumb { background: var(--border); }
+/* SIDEBAR */
+.sidebar { width: 265px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.sb-head { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+.sb-count { font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace; background: rgba(0,200,150,0.1); padding: 1px 7px; border-radius: 10px; }
+.tlist { flex: 1; overflow-y: auto; padding: 7px; }
+.tlist::-webkit-scrollbar { width: 3px; }
+.tlist::-webkit-scrollbar-thumb { background: var(--border); }
 
-.tcard {
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 11px 12px; margin-bottom: 7px; cursor: pointer; transition: all 0.2s;
-  position: relative; overflow: hidden;
-}
-.tcard::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.tcard { background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 10px 11px; margin-bottom: 6px; cursor: pointer; transition: all 0.18s; position: relative; overflow: hidden; }
+.tcard::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 3px 0 0 3px; }
 .tcard.running::before { background: var(--green); }
 .tcard.delayed::before { background: var(--yellow); }
 .tcard.arrived::before { background: var(--muted); }
-.tcard:hover, .tcard.active { border-color: var(--accent); background: rgba(0,200,150,0.04); }
-.tc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.tc-name { font-size: 12px; font-weight: 600; }
-.tc-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
-.tc-badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 500; flex-shrink: 0; }
+.tcard.scheduled::before { background: var(--border); }
+.tcard:hover, .tcard.active { border-color: var(--accent); background: rgba(0,200,150,0.05); transform: translateX(2px); }
+.tc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+.tc-name { font-size: 12px; font-weight: 600; line-height: 1.2; }
+.tc-num { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 1px; }
+.tc-badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 500; flex-shrink: 0; margin-left: 4px; }
 .tc-badge.running { background: rgba(0,200,150,0.15); color: var(--green); }
 .tc-badge.delayed { background: rgba(255,209,102,0.15); color: var(--yellow); }
 .tc-badge.arrived { background: rgba(90,112,144,0.15); color: var(--muted); }
-.tc-route { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-bottom: 7px; }
-.tc-arrow { color: var(--accent); }
-.tc-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 5px; }
-.tc-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00a87a); transition: width 0.8s ease; border-radius: 2px; }
-.tc-loc { font-size: 9px; color: var(--muted); }
+.tc-badge.scheduled { background: rgba(30,45,69,0.5); color: var(--muted); }
+.tc-route { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-bottom: 6px; white-space: nowrap; overflow: hidden; }
+.tc-arr { color: var(--accent); font-size: 9px; }
+.tc-bar { height: 2px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 4px; }
+.tc-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00a87a); transition: width 1s ease; border-radius: 2px; }
+.tc-loc { font-size: 9px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tc-loc b { color: var(--accent); font-weight: 500; }
 
-/* ---- MAP ---- */
+/* MAP */
 .map-wrap { flex: 1; position: relative; }
 #map { width: 100%; height: 100%; }
 
-/* Custom dark map filter */
-.leaflet-tile { filter: brightness(0.7) saturate(0.6) hue-rotate(180deg) invert(1); }
-.leaflet-container { background: var(--bg); }
+/* Leaflet custom tooltip */
+.leaflet-tooltip { background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; color: var(--text) !important; font-family: 'DM Sans', sans-serif !important; font-size: 12px !important; box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important; padding: 8px 12px !important; }
+.leaflet-tooltip::before { display: none !important; }
+.tt-name { font-weight: 600; margin-bottom: 3px; }
+.tt-from { color: #5a7090; font-size: 11px; }
+.tt-status { font-size: 10px; margin-top: 3px; }
+.tt-status.running { color: var(--green); }
+.tt-status.delayed { color: var(--yellow); }
 
-.map-overlay-tl {
-  position: absolute; top: 10px; left: 10px; z-index: 999;
-  display: flex; flex-direction: column; gap: 6px;
-}
-.live-pill {
-  background: rgba(239,71,111,0.18); border: 1px solid rgba(239,71,111,0.4);
-  border-radius: 20px; padding: 4px 12px; font-size: 10px; color: #ef476f;
-  display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace;
-  backdrop-filter: blur(6px);
-}
-.live-pill .dot { width: 6px; height: 6px; background: #ef476f; border-radius: 50%; animation: blink 1.2s infinite; }
-.approx-pill {
-  background: rgba(0,0,0,0.5); border: 1px solid var(--border);
-  border-radius: 20px; padding: 3px 10px; font-size: 9px; color: var(--muted);
-  backdrop-filter: blur(6px);
-}
+/* Map overlays */
+.map-tl { position: absolute; top: 10px; left: 10px; z-index: 999; display: flex; flex-direction: column; gap: 5px; }
+.live-pill { background: rgba(239,71,111,0.18); border: 1px solid rgba(239,71,111,0.4); border-radius: 20px; padding: 4px 11px; font-size: 10px; color: #ef476f; display: flex; align-items: center; gap: 6px; font-family: 'Space Mono', monospace; backdrop-filter: blur(6px); }
+.live-dot { width: 6px; height: 6px; background: #ef476f; border-radius: 50%; animation: blink 1.2s infinite; }
+.approx-pill { background: rgba(0,0,0,0.55); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; font-size: 9px; color: var(--muted); backdrop-filter: blur(6px); }
 
-/* ---- DETAIL PANEL ---- */
-.detail-panel {
-  position: absolute; bottom: 0; left: 0; right: 0; z-index: 998;
-  background: var(--surface); border-top: 1px solid var(--border);
-  padding: 14px 18px 16px; display: none;
-  animation: slideUp 0.25s ease;
-}
-.detail-panel.open { display: block; }
-@keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
-.dp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+/* DETAIL PANEL */
+.dp { position: absolute; bottom: 0; left: 0; right: 0; z-index: 998; background: var(--surface); border-top: 2px solid var(--border); padding: 14px 18px 14px; display: none; animation: su 0.25s ease; max-height: 45vh; overflow-y: auto; }
+.dp.open { display: block; }
+@keyframes su { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.dp-hd { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
 .dp-title { font-size: 15px; font-weight: 600; }
 .dp-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
-.dp-meta { display: flex; gap: 12px; margin-top: 4px; }
-.dp-tag { font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+.dp-tags { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; }
+.dp-tag { font-size: 10px; padding: 2px 9px; border-radius: 10px; }
 .dp-tag.running { background: rgba(0,200,150,0.15); color: var(--green); }
 .dp-tag.delayed { background: rgba(255,209,102,0.15); color: var(--yellow); }
-.dp-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
+.dp-tag.arrived { background: rgba(90,112,144,0.15); color: var(--muted); }
+.dp-tag.offday { background: rgba(30,45,69,0.7); color: var(--muted); }
+.dp-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; flex-shrink: 0; }
 .dp-close:hover { color: var(--text); }
 
-.timeline { display: flex; align-items: flex-start; overflow-x: auto; padding-bottom: 6px; gap: 0; }
+/* Station Timeline */
+.timeline { display: flex; align-items: flex-start; overflow-x: auto; padding: 6px 0 10px; }
 .timeline::-webkit-scrollbar { height: 3px; }
 .timeline::-webkit-scrollbar-thumb { background: var(--border); }
-.tstop { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 72px; position: relative; }
-.tstop-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--muted); background: var(--bg); z-index: 2; }
-.tstop-dot.done { border-color: var(--accent); background: var(--accent); }
-.tstop-dot.here { border-color: var(--accent2); background: var(--accent2); box-shadow: 0 0 10px var(--accent2); animation: glow 1.5s infinite; }
+.tstop { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 75px; }
+.ts-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--muted); background: var(--bg); z-index: 2; }
+.ts-dot.done { border-color: var(--accent); background: var(--accent); }
+.ts-dot.here { border-color: var(--accent2); background: var(--accent2); box-shadow: 0 0 10px var(--accent2); animation: glow 1.5s infinite; }
 @keyframes glow { 0%,100%{box-shadow:0 0 6px var(--accent2)} 50%{box-shadow:0 0 16px var(--accent2)} }
-.tstop-name { font-size: 9px; color: var(--muted); margin-top: 4px; text-align: center; max-width: 70px; line-height: 1.2; }
-.tstop-name.done { color: var(--accent); }
-.tstop-name.here { color: var(--accent2); font-weight: 600; }
-.tstop-time { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--muted); margin-top: 3px; }
-.tconn { flex: 1; min-width: 16px; height: 2px; background: var(--border); margin-top: 4px; }
+.ts-name { font-size: 9px; color: var(--muted); margin-top: 4px; text-align: center; max-width: 70px; line-height: 1.3; }
+.ts-name.done { color: var(--accent); }
+.ts-name.here { color: var(--accent2); font-weight: 600; }
+.ts-time { font-family: 'Space Mono', monospace; font-size: 8px; color: var(--muted); margin-top: 2px; }
+.tconn { flex: 1; min-width: 14px; height: 2px; background: var(--border); margin-top: 4px; }
 .tconn.done { background: var(--accent); }
 
-.dp-eta { margin-top: 12px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.eta-label { font-size: 10px; color: var(--muted); }
+.dp-eta { margin-top: 10px; padding: 8px 12px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.eta-lbl { font-size: 10px; color: var(--muted); }
 .eta-val { font-family: 'Space Mono', monospace; font-size: 13px; color: var(--accent); font-weight: 700; }
 
 /* Loading */
-.loading { position: absolute; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
-.loading .icon { font-size: 48px; animation: trainMove 1s infinite alternate; margin-bottom: 16px; }
-@keyframes trainMove { from{transform:translateX(-10px)} to{transform:translateX(10px)} }
+.loading { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+.loading .li { font-size: 52px; animation: tm 0.9s infinite alternate; margin-bottom: 14px; }
+@keyframes tm { from{transform:translateX(-12px)} to{transform:translateX(12px)} }
 .loading p { color: var(--muted); font-size: 13px; font-family: 'Space Mono', monospace; }
 </style>
 </head>
 <body>
 
-<!-- Loading Screen -->
 <div class="loading" id="loading">
-  <div class="icon">🚆</div>
-  <p>ট্র্যাকার লোড হচ্ছে...</p>
+  <div class="li">🚆</div>
+  <p id="loadTxt">ট্র্যাকার লোড হচ্ছে...</p>
 </div>
 
-<!-- Header -->
 <div class="header">
   <div class="logo">
     <div class="logo-icon">🚆</div>
@@ -201,49 +160,41 @@ html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(-
       <div class="logo-sub">বাংলাদেশ রেলওয়ে ট্র্যাকার</div>
     </div>
   </div>
-
   <div class="search-wrap">
-    <span class="search-icon">🔍</span>
+    <span class="s-icon">🔍</span>
     <input type="text" id="searchInput" placeholder="ট্রেনের নাম বা নম্বর লিখুন..." autocomplete="off">
-    <div class="search-results" id="searchResults"></div>
+    <div class="s-drop" id="sDrop"></div>
   </div>
-
   <div class="hstats">
-    <div class="hstat"><div class="hdot" style="background:var(--green)"></div><span id="cntRunning">0</span> চলছে</div>
-    <div class="hstat"><div class="hdot" style="background:var(--yellow)"></div><span id="cntDelayed">0</span> বিলম্বিত</div>
+    <div class="hstat"><div class="hdot" style="background:var(--green)"></div><span id="cntR">0</span> চলছে</div>
+    <div class="hstat"><div class="hdot" style="background:var(--yellow)"></div><span id="cntD">0</span> বিলম্বিত</div>
   </div>
-  <div class="last-update" id="lastUpdate">--:--</div>
+  <div class="upd" id="upd">--:--</div>
 </div>
 
-<!-- Main -->
 <div class="main">
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-head">
-      Active Trains
-      <span id="trainCount">0</span>
-    </div>
-    <div class="train-list" id="trainList"></div>
+  <div class="sidebar">
+    <div class="sb-head">Active Trains <span class="sb-count" id="sbCount">0</span></div>
+    <div class="tlist" id="tlist"></div>
   </div>
-
   <div class="map-wrap">
     <div id="map"></div>
-    <div class="map-overlay-tl">
-      <div class="live-pill"><div class="dot"></div>LIVE</div>
-      <div class="approx-pill">⚠️ Estimated position — Real-time GPS নয়</div>
+    <div class="map-tl">
+      <div class="live-pill"><div class="live-dot"></div>LIVE</div>
+      <div class="approx-pill">⚠️ Estimated — GPS নয়</div>
     </div>
-
-    <div class="detail-panel" id="detailPanel">
-      <div class="dp-header">
+    <div class="dp" id="dp">
+      <div class="dp-hd">
         <div>
           <div class="dp-title" id="dpName"></div>
           <div class="dp-sub" id="dpSub"></div>
-          <div class="dp-meta"><span class="dp-tag" id="dpStatus"></span></div>
+          <div class="dp-tags" id="dpTags"></div>
         </div>
-        <button class="dp-close" onclick="closeDetail()">✕</button>
+        <button class="dp-close" onclick="closeDP()">✕</button>
       </div>
-      <div class="timeline" id="dpTimeline"></div>
+      <div class="timeline" id="dpTL"></div>
       <div class="dp-eta">
-        <div class="eta-label" id="dpEtaLabel">গন্তব্যে পৌঁছাবে</div>
+        <div class="eta-lbl" id="dpEtaLbl">পরবর্তী স্টেশনে পৌঁছাবে</div>
         <div class="eta-val" id="dpEta">—</div>
       </div>
     </div>
@@ -252,152 +203,289 @@ html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(-
 
 <script>
 // ==============================================
-// CONFIG — Backend URL change করো deploy করার পর
+// ⚙️ CONFIG — তোমার Render URL এখানে আছে
 // ==============================================
-const API_BASE = 'https://bd-rail-backend.onrender.com'; // ← Render.com URL দিয়ে replace করো
+const API_BASE = 'https://bd-rail-backend.onrender.com';
+
+// ==============================================
+// STATION COORDINATES (frontend copy)
+// ==============================================
+const ST = {
+  'Dhaka':{lat:23.7308,lon:90.4194,name:'ঢাকা'},
+  'Chittagong':{lat:22.3384,lon:91.8317,name:'চট্টগ্রাম'},
+  'Sylhet':{lat:24.8949,lon:91.8687,name:'সিলেট'},
+  'Rajshahi':{lat:24.3745,lon:88.6042,name:'রাজশাহী'},
+  'Khulna':{lat:22.8456,lon:89.5403,name:'খুলনা'},
+  'Mymensingh':{lat:24.7471,lon:90.4203,name:'ময়মনসিংহ'},
+  'Comilla':{lat:23.4607,lon:91.1809,name:'কুমিল্লা'},
+  'Brahmanbaria':{lat:23.9568,lon:91.1117,name:'ব্রাহ্মণবাড়িয়া'},
+  'Akhaura':{lat:23.8786,lon:91.1817,name:'আখাউড়া'},
+  'Joydebpur':{lat:23.9999,lon:90.4017,name:'জয়দেবপুর'},
+  'Ishwardi':{lat:24.1247,lon:89.0640,name:'ঈশ্বরদী'},
+  'Jessore':{lat:23.1667,lon:89.2167,name:'যশোর'},
+  'Bogura':{lat:24.8465,lon:89.3773,name:'বগুড়া'},
+  'Parbatipur':{lat:25.6511,lon:88.9130,name:'পার্বতীপুর'},
+  'Dinajpur':{lat:25.6279,lon:88.6338,name:'দিনাজপুর'},
+  'Feni':{lat:23.0153,lon:91.3960,name:'ফেনী'},
+  'Laksam':{lat:23.2399,lon:91.1280,name:'লাকসাম'},
+  'Tongi':{lat:23.8896,lon:90.3987,name:'টঙ্গী'},
+  'Santahar':{lat:24.7455,lon:89.0472,name:'সান্তাহার'},
+  'Noakhali':{lat:22.8696,lon:91.0996,name:'নোয়াখালী'},
+  'Chandpur':{lat:23.2333,lon:90.6500,name:'চাঁদপুর'},
+  'Kishoreganj':{lat:24.4449,lon:90.7766,name:'কিশোরগঞ্জ'},
+  'Jamalpur':{lat:24.9374,lon:89.9374,name:'জামালপুর'},
+  'Dewanganj':{lat:25.0383,lon:89.9255,name:'দেওয়ানগঞ্জ'},
+  'Tarakandi':{lat:24.7619,lon:89.8544,name:'তারাকান্দি'},
+  'Lalmonirhat':{lat:25.9217,lon:89.4444,name:'লালমনিরহাট'},
+  'Rangpur':{lat:25.7439,lon:89.2752,name:'রংপুর'},
+  'Chilahati':{lat:25.9862,lon:88.8870,name:'চিলাহাটি'},
+  'Saidpur':{lat:25.7751,lon:88.8945,name:'সৈয়দপুর'},
+  'Mohanganj':{lat:24.6919,lon:90.9780,name:'মোহনগঞ্জ'},
+  'Netrokona':{lat:24.8703,lon:90.7279,name:'নেত্রকোনা'},
+  'Chapainawabganj':{lat:24.5964,lon:88.2748,name:'চাঁপাইনবাবগঞ্জ'},
+  'Bhairab':{lat:24.0524,lon:90.9762,name:'ভৈরব বাজার'},
+  'Habiganj':{lat:24.3740,lon:91.4152,name:'হবিগঞ্জ'},
+  'Moulvibazar':{lat:24.4829,lon:91.7774,name:'মৌলভীবাজার'},
+  'Nilphamari':{lat:25.9318,lon:88.8561,name:'নীলফামারী'},
+  'Panchagarh':{lat:26.3408,lon:88.5542,name:'পঞ্চগড়'},
+  'Kurigram':{lat:25.8072,lon:89.6364,name:'কুড়িগ্রাম'},
+  'Goalanda':{lat:23.9667,lon:89.8167,name:'গোয়ালন্দ'},
+  'Narayanganj':{lat:23.6238,lon:90.4996,name:'নারায়ণগঞ্জ'},
+};
 
 // ==============================================
 // STATE
 // ==============================================
 let allTrains = [];
-let markers = {};
+let trainMarkers = {};
+let routeLines = {};
+let stationMarkers = {};
 let selectedId = null;
 let map;
+let sidebarBuilt = false;
 
 // ==============================================
-// MAP INIT (Real OpenStreetMap via Leaflet)
+// MAP INIT
 // ==============================================
 function initMap() {
   map = L.map('map', {
-    center: [23.8, 90.3],
+    center: [23.8, 90.2],
     zoom: 7,
     zoomControl: false,
-    attributionControl: false
+    attributionControl: true
   });
 
-  // Dark tile layer using CartoDB dark
+  // Dark CartoDB tiles
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap contributors © CARTO',
+    attribution: '© OpenStreetMap © CARTO',
     maxZoom: 19
   }).addTo(map);
 
   L.control.zoom({ position: 'topright' }).addTo(map);
-  L.control.attribution({ position: 'bottomright', prefix: false }).addTo(map);
+
+  // Draw all stations on map
+  drawAllStations();
 }
 
-// Custom train icon
-function trainIcon(color, isSelected) {
-  const size = isSelected ? 36 : 28;
-  const svg = `<svg width="${size}" height="${size}" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="18" cy="18" r="17" fill="${color}" fill-opacity="${isSelected ? '0.3' : '0.15'}" stroke="${color}" stroke-width="${isSelected ? 2.5 : 1.5}"/>
-    <text x="18" y="23" font-size="16" text-anchor="middle" font-family="serif">🚆</text>
-  </svg>`;
-  return L.divIcon({
-    html: svg, className: '', iconSize: [size, size], iconAnchor: [size/2, size/2]
+// ==============================================
+// DRAW STATIONS
+// ==============================================
+function drawAllStations() {
+  Object.entries(ST).forEach(([id, st]) => {
+    const marker = L.circleMarker([st.lat, st.lon], {
+      radius: 4,
+      fillColor: '#1a2235',
+      color: '#2a5f8f',
+      weight: 2,
+      fillOpacity: 1,
+      zIndexOffset: 10
+    }).addTo(map);
+
+    marker.bindTooltip(`<div class="tt-name">${st.name}</div>`, {
+      permanent: false, direction: 'top', offset: [0, -6], opacity: 1
+    });
+
+    stationMarkers[id] = marker;
   });
 }
 
 // ==============================================
-// FETCH DATA FROM API
+// DRAW ROUTE LINE for selected train
+// ==============================================
+function drawRouteLine(train) {
+  // Remove old lines
+  Object.values(routeLines).forEach(l => map.removeLayer(l));
+  routeLines = {};
+
+  if (!train) return;
+
+  // Get route coordinates
+  const coords = train.stops
+    ? train.stops.map(s => {
+        const st = ST[s.id];
+        return st ? [st.lat, st.lon] : null;
+      }).filter(Boolean)
+    : (train.route || []).map(id => {
+        const st = ST[id];
+        return st ? [st.lat, st.lon] : null;
+      }).filter(Boolean);
+
+  if (coords.length < 2) return;
+
+  // Background thick line
+  routeLines['bg'] = L.polyline(coords, {
+    color: 'rgba(0,200,150,0.15)',
+    weight: 10,
+    lineCap: 'round'
+  }).addTo(map);
+
+  // Main route line
+  routeLines['main'] = L.polyline(coords, {
+    color: '#00c896',
+    weight: 2.5,
+    dashArray: '8 5',
+    lineCap: 'round',
+    opacity: 0.8
+  }).addTo(map);
+
+  // Highlight stations on route
+  const routeIds = train.stops ? train.stops.map(s => s.id) : (train.route || []);
+  routeIds.forEach(id => {
+    if (stationMarkers[id]) {
+      stationMarkers[id].setStyle({
+        fillColor: '#00c896',
+        color: '#00c896',
+        radius: 5,
+        weight: 2,
+      });
+    }
+  });
+}
+
+function clearRouteHighlight(train) {
+  if (!train) return;
+  const routeIds = train.stops ? train.stops.map(s => s.id) : (train.route || []);
+  routeIds.forEach(id => {
+    if (stationMarkers[id]) {
+      stationMarkers[id].setStyle({
+        fillColor: '#1a2235',
+        color: '#2a5f8f',
+        radius: 4,
+        weight: 2,
+      });
+    }
+  });
+  Object.values(routeLines).forEach(l => map.removeLayer(l));
+  routeLines = {};
+}
+
+// ==============================================
+// TRAIN ICON
+// ==============================================
+function makeTrainIcon(color, isSelected, status) {
+  const size = isSelected ? 34 : 24;
+  const pulse = isSelected ? `
+    <circle cx="17" cy="17" r="17" fill="${color}" fill-opacity="0.15">
+      <animate attributeName="r" values="14;17;14" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="fill-opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite"/>
+    </circle>` : '';
+
+  const svg = `<svg width="${size}" height="${size}" viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+    ${pulse}
+    <circle cx="17" cy="17" r="${isSelected?14:11}" fill="${color}" fill-opacity="${isSelected?0.25:0.2}" stroke="${color}" stroke-width="${isSelected?2:1.5}"/>
+    <text x="17" y="22" font-size="${isSelected?15:13}" text-anchor="middle" font-family="serif">🚆</text>
+  </svg>`;
+
+  return L.divIcon({
+    html: svg, className: '',
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+}
+
+// ==============================================
+// FETCH DATA
 // ==============================================
 async function fetchTrains() {
   try {
     const res = await fetch(`${API_BASE}/api/trains`);
+    if (!res.ok) throw new Error('API error');
     const data = await res.json();
     if (data.success) {
       allTrains = data.trains;
       updateUI();
-      document.getElementById('lastUpdate').textContent =
-        new Date().toLocaleTimeString('bn-BD', {hour:'2-digit', minute:'2-digit'});
+      return;
     }
-  } catch (err) {
-    // API unreachable — use demo data
-    console.warn('API unreachable, using demo data');
-    useDemoData();
+  } catch(e) {
+    console.warn('API not reachable, using demo');
   }
+  useDemoData();
+}
+
+async function fetchTrainDetail(id) {
+  try {
+    const res = await fetch(`${API_BASE}/api/trains/${id}`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    if (data.success) return data.train;
+  } catch(e) {}
+  return null;
 }
 
 // ==============================================
-// DEMO DATA (works offline without backend)
+// DEMO DATA (fallback)
 // ==============================================
 function useDemoData() {
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
-
-  const STATIONS_DEMO = {
-    Dhaka:{lat:23.7308,lon:90.4194,name:'ঢাকা'},
-    Chittagong:{lat:22.3384,lon:91.8317,name:'চট্টগ্রাম'},
-    Sylhet:{lat:24.8949,lon:91.8687,name:'সিলেট'},
-    Rajshahi:{lat:24.3745,lon:88.6042,name:'রাজশাহী'},
-    Khulna:{lat:22.8456,lon:89.5403,name:'খুলনা'},
-    Mymensingh:{lat:24.7471,lon:90.4203,name:'ময়মনসিংহ'},
-    Comilla:{lat:23.4607,lon:91.1809,name:'কুমিল্লা'},
-    Brahmanbaria:{lat:23.9568,lon:91.1117,name:'ব্রাহ্মণবাড়িয়া'},
-    Akhaura:{lat:23.8786,lon:91.1817,name:'আখাউড়া'},
-    Joydebpur:{lat:23.9999,lon:90.4017,name:'জয়দেবপুর'},
-    Jessore:{lat:23.1667,lon:89.2167,name:'যশোর'},
-    Bogura:{lat:24.8465,lon:89.3773,name:'বগুড়া'},
-    Dinajpur:{lat:25.6279,lon:88.6338,name:'দিনাজপুর'},
-    Feni:{lat:23.0153,lon:91.3960,name:'ফেনী'},
-  };
-
-  const DEMO_TRAINS = [
-    {id:'T701',name:'সুবর্ণ এক্সপ্রেস',number:'701',status:'running',departure:'07:00',arrival:'10:30',
-     route:['Dhaka','Comilla','Feni','Chittagong'],schedule:[0,100,150,210]},
-    {id:'T11',name:'পারাবত এক্সপ্রেস',number:'11',status:'delayed',departure:'06:40',arrival:'12:20',
-     route:['Dhaka','Akhaura','Sylhet'],schedule:[0,120,330]},
-    {id:'T753',name:'সিল্কসিটি এক্সপ্রেস',number:'753',status:'running',departure:'14:40',arrival:'19:10',
-     route:['Dhaka','Joydebpur','Rajshahi'],schedule:[0,40,270]},
-    {id:'T725',name:'সুন্দরবন এক্সপ্রেস',number:'725',status:'delayed',departure:'06:20',arrival:'11:20',
+  const DEMO = [
+    {id:'T701',name:'সুবর্ণ এক্সপ্রেস',number:'701',status:'running',departure:'07:00',arrival:'10:30',offDay:'শুক্রবার',
+     route:['Chittagong','Feni','Laksam','Comilla','Dhaka'],schedule:[0,60,95,120,210]},
+    {id:'T787',name:'সোনার বাংলা এক্সপ্রেস',number:'787',status:'running',departure:'08:30',arrival:'14:00',offDay:'মঙ্গলবার',
+     route:['Dhaka','Brahmanbaria','Akhaura','Laksam','Feni','Chittagong'],schedule:[0,80,100,140,165,210]},
+    {id:'T709',name:'পারাবত এক্সপ্রেস',number:'709',status:'delayed',departure:'06:40',arrival:'12:40',offDay:'মঙ্গলবার',
+     route:['Dhaka','Tongi','Bhairab','Brahmanbaria','Akhaura','Sylhet'],schedule:[0,25,90,120,140,330]},
+    {id:'T753',name:'সিল্কসিটি এক্সপ্রেস',number:'753',status:'running',departure:'07:30',arrival:'13:30',offDay:'রবিবার',
+     route:['Rajshahi','Ishwardi','Joydebpur','Dhaka'],schedule:[0,80,230,270]},
+    {id:'T726',name:'সুন্দরবন এক্সপ্রেস',number:'726',status:'delayed',departure:'06:20',arrival:'16:50',offDay:'শনিবার',
      route:['Dhaka','Jessore','Khulna'],schedule:[0,200,300]},
-    {id:'T757',name:'দ্রুতযান এক্সপ্রেস',number:'757',status:'running',departure:'09:00',arrival:'11:30',
-     route:['Dhaka','Joydebpur','Mymensingh'],schedule:[0,55,150]},
-    {id:'T705',name:'একতা এক্সপ্রেস',number:'705',status:'running',departure:'10:00',arrival:'17:00',
-     route:['Dhaka','Bogura','Dinajpur'],schedule:[0,310,420]},
+    {id:'T757',name:'দ্রুতযান এক্সপ্রেস',number:'757',status:'running',departure:'09:00',arrival:'11:30',offDay:'নেই',
+     route:['Dhaka','Tongi','Joydebpur','Mymensingh'],schedule:[0,30,55,150]},
+    {id:'T705',name:'একতা এক্সপ্রেস',number:'705',status:'running',departure:'09:50',arrival:'19:20',offDay:'মঙ্গলবার',
+     route:['Dhaka','Joydebpur','Santahar','Bogura','Parbatipur','Dinajpur'],schedule:[0,55,280,310,380,420]},
+    {id:'T717',name:'জয়ন্তিকা এক্সপ্রেস',number:'717',status:'running',departure:'14:00',arrival:'21:00',offDay:'নেই',
+     route:['Dhaka','Tongi','Bhairab','Akhaura','Habiganj','Moulvibazar','Sylhet'],schedule:[0,25,100,140,200,250,330]},
+    {id:'T771',name:'রংপুর এক্সপ্রেস',number:'771',status:'running',departure:'09:00',arrival:'17:00',offDay:'বুধবার',
+     route:['Dhaka','Joydebpur','Bogura','Rangpur'],schedule:[0,55,280,380]},
+    {id:'T729',name:'পাহাড়িকা এক্সপ্রেস',number:'729',status:'running',departure:'07:00',arrival:'14:00',offDay:'শুক্রবার',
+     route:['Chittagong','Akhaura','Sylhet'],schedule:[0,180,360]},
   ];
 
-  function calcPos(train) {
-    const [dH,dM]=train.departure.split(':').map(Number);
-    const dep=dH*60+dM;
-    const totalDur=train.schedule[train.schedule.length-1];
-    let elapsed=nowMin-dep;
-    if(elapsed<0)elapsed+=1440;
-    if(elapsed>totalDur){
-      const ls=STATIONS_DEMO[train.route[train.route.length-1]];
-      return{lat:ls.lat,lon:ls.lon,status:'arrived',progress:100,fromStationName:'—',toStationName:'পৌঁছে গেছে',etaFinal:'পৌঁছে গেছে'};
-    }
-    for(let i=0;i<train.schedule.length-1;i++){
-      if(elapsed>=train.schedule[i]&&elapsed<=train.schedule[i+1]){
-        const p=(elapsed-train.schedule[i])/(train.schedule[i+1]-train.schedule[i]);
-        const a=STATIONS_DEMO[train.route[i]],b=STATIONS_DEMO[train.route[i+1]];
-        const minsLeft=train.schedule[i+1]-elapsed;
-        return{
-          lat:a.lat+(b.lat-a.lat)*p, lon:a.lon+(b.lon-a.lon)*p,
-          status:train.status,
-          progress:Math.round(elapsed/totalDur*100),
-          fromStation:train.route[i], toStation:train.route[i+1],
-          fromStationName:a.name, toStationName:b.name,
-          segmentProgress:Math.round(p*100),
-          minutesToNextStation:Math.round(minsLeft),
-          etaFinal:`${Math.round(minsLeft)} মিনিট`
-        };
+  function calcPos(t) {
+    const [dH,dM]=t.departure.split(':').map(Number);
+    const dep=dH*60+dM, total=t.schedule[t.schedule.length-1];
+    let el=nowMin-dep; if(el<0)el+=1440;
+    if(el>total){const ls=ST[t.route[t.route.length-1]];return{lat:ls?.lat,lon:ls?.lon,status:'arrived',progress:100,fromStationName:'—',toStationName:'পৌঁছে গেছে',etaFinal:'পৌঁছে গেছে'};}
+    for(let i=0;i<t.schedule.length-1;i++){
+      if(el>=t.schedule[i]&&el<=t.schedule[i+1]){
+        const p=(el-t.schedule[i])/(t.schedule[i+1]-t.schedule[i]);
+        const a=ST[t.route[i]],b=ST[t.route[i+1]];
+        if(!a||!b)continue;
+        return{lat:a.lat+(b.lat-a.lat)*p,lon:a.lon+(b.lon-a.lon)*p,status:t.status,progress:Math.round(el/total*100),fromStation:t.route[i],toStation:t.route[i+1],fromStationName:a.name,toStationName:b.name,minutesToNextStation:Math.round(t.schedule[i+1]-el),etaFinal:`${Math.round(t.schedule[i+1]-el)} মিনিট`};
       }
     }
-    const fs=STATIONS_DEMO[train.route[0]];
-    return{lat:fs.lat,lon:fs.lon,status:'scheduled',progress:0,fromStationName:'এখনো ছাড়েনি',toStationName:'',etaFinal:'—'};
+    const fs=ST[t.route[0]];return{lat:fs?.lat,lon:fs?.lon,status:'scheduled',progress:0,fromStationName:'এখনো ছাড়েনি',toStationName:'',etaFinal:'—'};
   }
 
-  allTrains = DEMO_TRAINS.map(t => {
-    const origin=STATIONS_DEMO[t.route[0]],dest=STATIONS_DEMO[t.route[t.route.length-1]];
+  allTrains = DEMO.map(t => {
     const stops = t.route.map((id,i)=>{
       const [dH,dM]=t.departure.split(':').map(Number);
       const total=dH*60+dM+t.schedule[i];
       const h=Math.floor(total/60)%24,m=total%60;
-      return{id,...STATIONS_DEMO[id],scheduledTime:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`};
+      return{id,...(ST[id]||{}),scheduledTime:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`};
     });
-    return{...t,origin,destination:dest,stops,position:calcPos(t)};
+    return{...t,stops,origin:ST[t.route[0]],destination:ST[t.route[t.route.length-1]],position:calcPos(t)};
   });
-
   updateUI();
 }
 
@@ -405,89 +493,89 @@ function useDemoData() {
 // UPDATE ALL UI
 // ==============================================
 function updateUI() {
-  const running = allTrains.filter(t=>t.position?.status==='running').length;
-  const delayed = allTrains.filter(t=>t.position?.status==='delayed').length;
-  document.getElementById('cntRunning').textContent = running;
-  document.getElementById('cntDelayed').textContent = delayed;
-  document.getElementById('trainCount').textContent = allTrains.length;
-  document.getElementById('lastUpdate').textContent =
-    new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'});
-
+  document.getElementById('cntR').textContent = allTrains.filter(t=>t.position?.status==='running').length;
+  document.getElementById('cntD').textContent = allTrains.filter(t=>t.position?.status==='delayed').length;
+  document.getElementById('sbCount').textContent = allTrains.length;
+  document.getElementById('upd').textContent = new Date().toLocaleTimeString('bn-BD',{hour:'2-digit',minute:'2-digit'});
   updateSidebar();
-  updateMarkers();
+  updateTrainMarkers();
   if (selectedId) {
     const t = allTrains.find(x=>x.id===selectedId);
-    if (t) showDetail(t);
+    if (t) showDP(t);
   }
-  document.getElementById('loading').style.display='none';
+  document.getElementById('loading').style.display = 'none';
 }
 
 // ==============================================
 // SIDEBAR
 // ==============================================
 function updateSidebar() {
-  const list = document.getElementById('trainList');
+  const list = document.getElementById('tlist');
+
   allTrains.forEach(train => {
     const pos = train.position || {};
-    const existing = document.getElementById('card-'+train.id);
-    const statusLabel = pos.status==='running'?'চলছে':pos.status==='delayed'?'বিলম্বিত':pos.status==='arrived'?'পৌঁছেছে':'নির্ধারিত';
-    const barW = (pos.progress||0) + '%';
-    const locText = pos.fromStationName ? `<b>${pos.fromStationName}</b> → ${pos.toStationName||''}` : '—';
+    const stTxt = pos.status==='running'?'চলছে':pos.status==='delayed'?'বিলম্বিত':pos.status==='arrived'?'পৌঁছেছে':'নির্ধারিত';
+    const locHTML = pos.fromStationName
+      ? `<b>${pos.fromStationName}</b>${pos.toStationName ? ' → '+pos.toStationName : ''}`
+      : '—';
 
+    const existing = document.getElementById('tc-'+train.id);
     if (existing) {
-      existing.querySelector('.tc-fill').style.width = barW;
-      existing.querySelector('.tc-loc').innerHTML = locText;
+      existing.querySelector('.tc-fill').style.width = (pos.progress||0)+'%';
+      existing.querySelector('.tc-loc').innerHTML = locHTML;
       return;
     }
 
+    const originName = train.origin?.name || '—';
+    const destName = train.destination?.name || '—';
     const card = document.createElement('div');
-    card.id = 'card-'+train.id;
-    card.className = `tcard ${pos.status||'scheduled'}${selectedId===train.id?' active':''}`;
+    card.id = 'tc-'+train.id;
+    card.className = `tcard ${pos.status||'scheduled'}`;
     card.innerHTML = `
       <div class="tc-top">
         <div><div class="tc-name">${train.name}</div><div class="tc-num">#${train.number}</div></div>
-        <span class="tc-badge ${pos.status||'scheduled'}">${statusLabel}</span>
+        <span class="tc-badge ${pos.status||'scheduled'}">${stTxt}</span>
       </div>
       <div class="tc-route">
-        <span>${train.origin?.name||'—'}</span>
-        <span class="tc-arrow">→</span>
-        <span>${train.destination?.name||'—'}</span>
+        <span style="overflow:hidden;text-overflow:ellipsis">${originName}</span>
+        <span class="tc-arr">→</span>
+        <span style="overflow:hidden;text-overflow:ellipsis">${destName}</span>
       </div>
-      <div class="tc-bar"><div class="tc-fill" style="width:${barW}"></div></div>
-      <div class="tc-loc">${locText}</div>`;
+      <div class="tc-bar"><div class="tc-fill" style="width:${pos.progress||0}%"></div></div>
+      <div class="tc-loc">${locHTML}</div>`;
     card.onclick = () => selectTrain(train);
     list.appendChild(card);
   });
 }
 
 // ==============================================
-// MAP MARKERS
+// TRAIN MARKERS ON MAP
 // ==============================================
-function updateMarkers() {
+function updateTrainMarkers() {
   allTrains.forEach(train => {
     const pos = train.position;
-    if (!pos || !pos.lat) return;
+    if (!pos || !pos.lat || !pos.lon) return;
     const color = pos.status==='running'?'#00c896':pos.status==='delayed'?'#ffd166':'#5a7090';
-    const isSel = selectedId===train.id;
+    const isSel = selectedId === train.id;
 
-    if (markers[train.id]) {
-      markers[train.id].setLatLng([pos.lat, pos.lon]);
-      markers[train.id].setIcon(trainIcon(color, isSel));
+    if (trainMarkers[train.id]) {
+      trainMarkers[train.id].setLatLng([pos.lat, pos.lon]);
+      trainMarkers[train.id].setIcon(makeTrainIcon(color, isSel, pos.status));
     } else {
-      const m = L.marker([pos.lat, pos.lon], {icon:trainIcon(color, isSel)})
-        .addTo(map)
-        .on('click', ()=>selectTrain(train));
+      const m = L.marker([pos.lat, pos.lon], {
+        icon: makeTrainIcon(color, isSel, pos.status),
+        zIndexOffset: isSel ? 1000 : 100
+      }).addTo(map);
 
-      // Tooltip on hover
       m.bindTooltip(`
-        <div style="font-family:'DM Sans',sans-serif;font-size:12px;background:#111827;border:1px solid #1e2d45;border-radius:8px;padding:8px 12px;color:#e8edf5;">
-          <b>${train.name}</b><br>
-          <span style="color:#5a7090;font-size:10px">${pos.fromStationName||'—'} → ${pos.toStationName||'—'}</span>
-        </div>`, {
-        permanent: false, direction: 'top', offset: [0, -10],
-        className: 'leaflet-tooltip-custom', opacity: 1
-      });
-      markers[train.id] = m;
+        <div class="tt-name">${train.name} (#${train.number})</div>
+        <div class="tt-from">${pos.fromStationName||'—'} → ${pos.toStationName||'—'}</div>
+        <div class="tt-status ${pos.status||''}">${pos.status==='running'?'● চলছে':pos.status==='delayed'?'● বিলম্বিত':'পৌঁছেছে'}</div>`,
+        { permanent: false, direction: 'top', offset: [0,-12], opacity:1 }
+      );
+
+      m.on('click', () => selectTrain(train));
+      trainMarkers[train.id] = m;
     }
   });
 }
@@ -495,95 +583,141 @@ function updateMarkers() {
 // ==============================================
 // SELECT TRAIN
 // ==============================================
-function selectTrain(train) {
+async function selectTrain(train) {
+  // Deselect old
+  if (selectedId) {
+    const old = allTrains.find(t=>t.id===selectedId);
+    if (old) clearRouteHighlight(old);
+    const oldCard = document.getElementById('tc-'+selectedId);
+    if (oldCard) oldCard.classList.remove('active');
+  }
+
   selectedId = train.id;
-  document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('active'));
-  const card = document.getElementById('card-'+train.id);
+
+  // Update sidebar card
+  const card = document.getElementById('tc-'+train.id);
   if (card) { card.classList.add('active'); card.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  updateMarkers();
-  if (train.position?.lat) map.setView([train.position.lat, train.position.lon], 9, {animate:true});
-  showDetail(train);
+
+  // Update marker icon
+  const pos = train.position || {};
+  const color = pos.status==='running'?'#00c896':pos.status==='delayed'?'#ffd166':'#5a7090';
+  if (trainMarkers[train.id]) trainMarkers[train.id].setIcon(makeTrainIcon(color, true, pos.status));
+
+  // Fetch full detail (with stops)
+  document.getElementById('loadTxt').textContent = 'Train detail লোড হচ্ছে...';
+  const detail = await fetchTrainDetail(train.id);
+  const fullTrain = detail || train;
+
+  // Draw route
+  drawRouteLine(fullTrain);
+
+  // Move map
+  if (pos.lat) map.setView([pos.lat, pos.lon], 9, {animate:true, duration:0.8});
+
+  // Show detail panel
+  showDP(fullTrain);
 }
 
-function showDetail(train) {
+// ==============================================
+// DETAIL PANEL
+// ==============================================
+function showDP(train) {
   const pos = train.position || {};
   document.getElementById('dpName').textContent = `${train.name} (#${train.number})`;
   document.getElementById('dpSub').textContent =
     `${train.origin?.name||'—'} → ${train.destination?.name||'—'} | ছাড়ে ${train.departure||'—'} | পৌঁছায় ${train.arrival||'—'}`;
-  const statusEl = document.getElementById('dpStatus');
-  const statusTxt = pos.status==='running'?'চলছে':pos.status==='delayed'?'বিলম্বিত':'পৌঁছেছে';
-  statusEl.textContent = statusTxt;
-  statusEl.className = `dp-tag ${pos.status||''}`;
+
+  const tagsEl = document.getElementById('dpTags');
+  const stTxt = pos.status==='running'?'চলছে':pos.status==='delayed'?'বিলম্বিত':pos.status==='arrived'?'পৌঁছেছে':'নির্ধারিত';
+  tagsEl.innerHTML = `
+    <span class="dp-tag ${pos.status||''}">${stTxt}</span>
+    ${train.offDay?`<span class="dp-tag offday">বন্ধ: ${train.offDay}</span>`:''}
+    ${pos.progress>0?`<span class="dp-tag offday">${pos.progress}% সম্পন্ন</span>`:''}`;
 
   document.getElementById('dpEta').textContent = pos.etaFinal || '—';
-  document.getElementById('dpEtaLabel').textContent =
-    pos.status==='arrived' ? 'গন্তব্যে পৌঁছেছে' : 'পরবর্তী স্টেশনে পৌঁছাবে';
+  document.getElementById('dpEtaLbl').textContent =
+    pos.status==='arrived' ? 'গন্তব্যে পৌঁছেছে' : `${pos.toStationName||'গন্তব্য'} পর্যন্ত`;
 
   // Timeline
-  const timeline = document.getElementById('dpTimeline');
-  timeline.innerHTML = '';
+  const tl = document.getElementById('dpTL');
+  tl.innerHTML = '';
   const stops = train.stops || [];
+  const fromIdx = stops.findIndex(s => s.id === pos.fromStation);
+
   stops.forEach((st, i) => {
-    const isDone = i < stops.findIndex(s=>s.id===pos.toStation);
-    const isHere = st.id === pos.fromStation;
+    const isDone = i < fromIdx;
+    const isHere = i === fromIdx;
+
     if (i > 0) {
       const conn = document.createElement('div');
-      conn.className = 'tconn' + (isDone?' done':'');
-      timeline.appendChild(conn);
+      conn.className = 'tconn' + (isDone ? ' done' : '');
+      tl.appendChild(conn);
     }
     const stop = document.createElement('div');
     stop.className = 'tstop';
     stop.innerHTML = `
-      <div class="tstop-dot ${isHere?'here':isDone?'done':''}"></div>
-      <div class="tstop-name ${isHere?'here':isDone?'done':''}">${st.name||st.nameEn||st.id}</div>
-      <div class="tstop-time">${st.scheduledTime||'—'}</div>`;
-    timeline.appendChild(stop);
+      <div class="ts-dot ${isHere?'here':isDone?'done':''}"></div>
+      <div class="ts-name ${isHere?'here':isDone?'done':''}">${st.name||st.nameEn||st.id}</div>
+      <div class="ts-time">${st.scheduledTime||'—'}</div>`;
+    tl.appendChild(stop);
   });
 
-  document.getElementById('detailPanel').classList.add('open');
+  // Scroll timeline to current position
+  setTimeout(() => {
+    const hereEl = tl.querySelector('.ts-dot.here');
+    if (hereEl) hereEl.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+  }, 100);
+
+  document.getElementById('dp').classList.add('open');
 }
 
-function closeDetail() {
-  document.getElementById('detailPanel').classList.remove('open');
+function closeDP() {
+  document.getElementById('dp').classList.remove('open');
+  if (selectedId) {
+    const old = allTrains.find(t=>t.id===selectedId);
+    if (old) {
+      clearRouteHighlight(old);
+      const pos = old.position||{};
+      const color = pos.status==='running'?'#00c896':pos.status==='delayed'?'#ffd166':'#5a7090';
+      if (trainMarkers[selectedId]) trainMarkers[selectedId].setIcon(makeTrainIcon(color, false, pos.status));
+    }
+    const card = document.getElementById('tc-'+selectedId);
+    if (card) card.classList.remove('active');
+  }
   selectedId = null;
-  document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('active'));
-  updateMarkers();
 }
 
 // ==============================================
 // SEARCH
 // ==============================================
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-
-searchInput.addEventListener('input', () => {
-  const q = searchInput.value.trim().toLowerCase();
-  if (!q) { searchResults.classList.remove('show'); return; }
-  const found = allTrains.filter(t => t.name.includes(q) || t.number.includes(q) || (t.nameEn||'').toLowerCase().includes(q));
-  searchResults.innerHTML = '';
+const si = document.getElementById('searchInput');
+const sd = document.getElementById('sDrop');
+si.addEventListener('input', () => {
+  const q = si.value.trim().toLowerCase();
+  if (!q) { sd.classList.remove('show'); return; }
+  const found = allTrains.filter(t => t.name.includes(q) || t.number.includes(q));
+  sd.innerHTML = '';
   if (!found.length) {
-    searchResults.innerHTML = '<div class="sr-item" style="color:var(--muted)">কোনো ট্রেন পাওয়া যায়নি</div>';
+    sd.innerHTML = '<div class="s-item" style="color:var(--muted)">কোনো ট্রেন পাওয়া যায়নি</div>';
   } else {
     found.forEach(t => {
       const item = document.createElement('div');
-      item.className = 'sr-item';
+      item.className = 's-item';
       const st = t.position?.status||'scheduled';
       const stTxt = st==='running'?'চলছে':st==='delayed'?'বিলম্বিত':'পৌঁছেছে';
-      item.innerHTML = `<span class="sr-num">${t.number}</span>${t.name}<span class="sr-status ${st}">${stTxt}</span>`;
-      item.onclick = () => { searchInput.value=t.name; searchResults.classList.remove('show'); selectTrain(t); };
-      searchResults.appendChild(item);
+      item.innerHTML = `<span class="s-num">${t.number}</span>${t.name}<span class="s-st ${st}">${stTxt}</span>`;
+      item.onclick = () => { si.value=t.name; sd.classList.remove('show'); selectTrain(t); };
+      sd.appendChild(item);
     });
   }
-  searchResults.classList.add('show');
+  sd.classList.add('show');
 });
-document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) searchResults.classList.remove('show'); });
+document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) sd.classList.remove('show'); });
 
 // ==============================================
-// AUTO REFRESH every 30 seconds
+// AUTO REFRESH every 60 seconds
 // ==============================================
-async function refresh() {
-  await fetchTrains();
-}
+setInterval(fetchTrains, 60000);
 
 // ==============================================
 // INIT
@@ -591,7 +725,6 @@ async function refresh() {
 (async () => {
   initMap();
   await fetchTrains();
-  setInterval(refresh, 30000);
 })();
 </script>
 </body>
