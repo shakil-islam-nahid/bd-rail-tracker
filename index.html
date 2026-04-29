@@ -892,32 +892,40 @@ function renderSuggestions(matches, query) {
   sugFocusIdx = -1;
 }
 
+function getRouteStationsForSelected() {
+  const trainNum = document.getElementById('selectTrain').value;
+  if (!trainNum) return allStations; // ট্রেন না বাছলে সব দেখাও
+  const trainObj = allTrains.find(t => t.number === trainNum);
+  const routeIds = trainObj?.route_stations || [];
+  const routeSt = routeIds.map(id => allStations.find(s => s.id === id)).filter(Boolean);
+  return routeSt.length > 0 ? routeSt : allStations;
+}
+
 function onCustomFocus() {
   const val = document.getElementById('customStation').value.trim();
-  if (!val && allStations.length > 0) {
-    // খালি থাকলে সব station দেখাও (প্রথম ২০টা)
-    renderSuggestions(allStations.slice(0, 20), '');
-  } else if (val) {
+  const pool = getRouteStationsForSelected();
+  if (!val) {
+    renderSuggestions(pool.slice(0, 20), '');
+  } else {
     onCustomInput();
   }
 }
 
 function onCustomInput() {
   const val = document.getElementById('customStation').value.trim();
-  // selected id clear হবে যদি user নতুন কিছু type করে
   document.getElementById('customStation').dataset.selectedId = '';
   sugFocusIdx = -1;
 
+  const pool = getRouteStationsForSelected();
+
   if (!val) {
-    // খালি করলে সব station দেখাও
-    renderSuggestions(allStations.slice(0, 20), '');
+    renderSuggestions(pool.slice(0, 20), '');
     return;
   }
 
   const lower = val.toLowerCase();
-  // প্রথমে starts-with match, তারপর includes
-  const starts = allStations.filter(s => s.name.toLowerCase().startsWith(lower));
-  const includes = allStations.filter(s =>
+  const starts = pool.filter(s => s.name.toLowerCase().startsWith(lower));
+  const includes = pool.filter(s =>
     !s.name.toLowerCase().startsWith(lower) && s.name.toLowerCase().includes(lower)
   );
   const matches = [...starts, ...includes].slice(0, 10);
@@ -1041,18 +1049,38 @@ async function submitReport() {
     stationName = input.value.trim();
     if (!stationName) { showToast('⚠️ স্টেশনের নাম লিখুন'); return; }
 
-    // যদি suggestion থেকে pick করা হয়ে থাকে সেটার id ও coords নাও
+    // এই train-এর route-এর stations বের করো
+    const trainObj = allTrains.find(t => t.number === trainNum);
+    const routeIds = trainObj?.route_stations || [];
+    const routeStations = routeIds.map(id => allStations.find(s => s.id === id)).filter(Boolean);
+
+    // ১. Suggestion থেকে pick হলে সেটা আগে নাও
     const pickedId = input.dataset.selectedId;
     if (pickedId) {
       const st = allStations.find(s => s.id === pickedId);
-      if (st) { stationId = pickedId; lat = st.lat; lon = st.lon; }
+      if (st) { stationId = st.id; lat = st.lat; lon = st.lon; stationName = st.name; }
     }
-    // যদি suggestion-এ না থাকে তাহলে name দিয়ে চেষ্টা করো
+
+    // ২. Route-এর মধ্যে name match খোঁজো (exact → starts → includes)
     if (!stationId) {
-      const st = allStations.find(s => s.name.toLowerCase() === stationName.toLowerCase());
-      if (st) { stationId = st.id; lat = st.lat; lon = st.lon; }
+      const lower = stationName.toLowerCase();
+      const best =
+        routeStations.find(s => s.name.toLowerCase() === lower) ||
+        routeStations.find(s => s.name.toLowerCase().startsWith(lower)) ||
+        routeStations.find(s => s.name.toLowerCase().includes(lower)) ||
+        allStations.find(s => s.name.toLowerCase() === lower) ||
+        allStations.find(s => s.name.toLowerCase().startsWith(lower)) ||
+        allStations.find(s => s.name.toLowerCase().includes(lower));
+      if (best) { stationId = best.id; lat = best.lat; lon = best.lon; stationName = best.name; }
     }
-    // কোনোভাবেই না পেলে default coords
+
+    // ৩. কিছুই না পেলে route-এর মাঝামাঝি station নাও
+    if (!lat && routeStations.length > 0) {
+      const mid = routeStations[Math.floor(routeStations.length / 2)];
+      stationId = mid.id; lat = mid.lat; lon = mid.lon;
+      showToast('⚠️ স্টেশন পাওয়া যায়নি, কাছের স্টেশনে রাখা হয়েছে');
+    }
+
     if (!lat) { lat = 23.7; lon = 90.4; }
   }
 
